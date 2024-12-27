@@ -4,6 +4,11 @@ const axios = require("axios");
 const FormData = require("form-data");
 
 const app = express();
+// Enable CORS for your frontend URL
+app.use(cors({
+  origin: ["https://nodebacked.vercel.app"], // Update with your frontend URL
+  methods: ["GET", "POST"]
+}));
 
 // Configure multer for in-memory storage
 const storage = multer.memoryStorage();
