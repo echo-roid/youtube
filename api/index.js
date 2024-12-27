@@ -42,7 +42,4 @@ app.post("api/upload", upload.single("photo"), async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Vercel server running on port ${PORT}`);
-});
+module.exports = app;
