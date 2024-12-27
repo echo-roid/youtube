@@ -6,7 +6,7 @@ const FormData = require("form-data");
 const app = express();
 // Enable CORS for your frontend URL
 app.use(cors({
-  origin: ["https://nodebacked.vercel.app"], // Update with your frontend URL
+  origin: ["https://snapchat.vercel.app"], // Update with your frontend URL
   methods: ["GET", "POST"]
 }));
 
