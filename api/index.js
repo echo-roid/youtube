@@ -2,9 +2,14 @@ const express = require("express");
 const multer = require("multer");
 const axios = require("axios");
 const FormData = require("form-data");
+const cors = require("cors");
 
 const app = express();
 
+app.use(cors({
+  origin: ["https://snapchat-ten.vercel.app"], // Update with your frontend URL
+  methods: ["GET", "POST"]
+}));
 // Configure multer for in-memory storage
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
