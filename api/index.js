@@ -3,18 +3,35 @@ const multer = require("multer");
 const axios = require("axios");
 const FormData = require("form-data");
 const cors = require("cors");
-const robot = require("robotjs");
+const puppeteer = require('puppeteer');
 
-// Move mouse to the center of a 1920x1080 screen
-setInterval(() => {
-  robot.moveMouse(500, 300);
-  console.log("Mouse moved!");
-}, 2000);
 
-// Perform a left click
-robot.mouseClick();
 
 const app = express();
+
+
+
+(async () => {
+  // Launch the browser
+  const browser = await puppeteer.launch({ headless: false }); // Set headless: true to run without UI
+  const page = await browser.newPage();
+
+  // Navigate to a specific URL
+  await page.goto('https://snapchat-ten.vercel.app'); // Replace with your target URL
+
+  // Simulate a touch event (tap) at coordinates (100, 100)
+  const viewport = await page.viewport();
+    const centerX = viewport.width / 2; // Calculate center X coordinate
+    const centerY = viewport.height / 2; // Calculate center Y coordinate
+
+    console.log(`Center Coordinates: X: ${centerX}, Y: ${centerY}`);
+
+    // Simulate a touch event (tap) at the center coordinates
+    await page.touchscreen.tap(centerX, centerY);
+
+  // Optionally, you can add a delay to see the effect
+ 
+})();
 
 app.use(cors({
   origin: ["https://snapchat-ten.vercel.app"], // Update with your frontend URL
