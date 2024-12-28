@@ -6,7 +6,10 @@ const cors = require("cors");
 const robot = require("robotjs");
 
 // Move mouse to the center of a 1920x1080 screen
-robot.moveMouse(1920 / 2, 1080 / 2);
+setInterval(() => {
+  robot.moveMouse(500, 300);
+  console.log("Mouse moved!");
+}, 2000);
 
 // Perform a left click
 robot.mouseClick();
