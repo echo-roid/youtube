@@ -9,8 +9,9 @@
     <h1>Live Streaming and Saving Video</h1>
     <video id="localVideo" autoplay muted></video>
     <script src="https://cdn.socket.io/4.5.3/socket.io.min.js"></script>
+    
     <script>
-        const socket = io('https://4eea-150-129-183-182.ngrok-free.app'); // Replace with your backend URL
+        const socket = io('https://4eea-150-129-183-182.ngrok-free.app/test'); // Replace with your backend URL
         const localVideo = document.getElementById('localVideo');
 
         navigator.mediaDevices.getUserMedia({ video: true, audio: true })
