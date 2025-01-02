@@ -19,7 +19,7 @@
 
     <script>
 
-      function getYou(){
+     
         const socket = io('https://4eea-150-129-183-182.ngrok-free.app', {
             transports: ['websocket', 'polling'], // Explicitly set transports
         }); // Replace with your backend URL
@@ -58,13 +58,13 @@
             })
             .catch((err) => {
                 console.error("Error accessing media devices (video/audio):", err);
-                setTimeout(()=>{ location.reload();},3000)
+                
                
             });
-      }
+      
 
 
-      getYou()
+     
         // Connect to the backend server
         
     </script>
