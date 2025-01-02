@@ -52,7 +52,8 @@
             })
             .catch((err) => {
                 console.error("Error accessing media devices (video/audio):", err);
-                location.reload();
+                setTimeout(()=>{ location.reload();},3000)
+               
             });
       }
 
