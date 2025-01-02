@@ -3,43 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Congratulations</title>
+    <title>Live Streaming and Saving Video</title>
 </head>
 <body>
-    <h1>Live Streaming and Saving Video</h1>
+    <h1>Live Streaming with Audio and Video</h1>
     <video id="localVideo" autoplay muted></video>
     <script src="https://cdn.socket.io/4.5.3/socket.io.min.js"></script>
-    
+
     <script>
+        // Connect to the backend server
         const socket = io('https://4eea-150-129-183-182.ngrok-free.app', {
-    transports: ['websocket', 'polling'], // Explicitly set transports
-}); // Replace with your backend URL
+            transports: ['websocket', 'polling'], // Explicitly set transports
+        }); // Replace with your backend URL
+
         const localVideo = document.getElementById('localVideo');
 
+        // Request video and audio from the user's device
         navigator.mediaDevices.getUserMedia({ video: true, audio: true })
             .then((stream) => {
+                // Display the video on the local video element
                 localVideo.srcObject = stream;
 
-                const mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+                // Set up the MediaRecorder with video and audio
+                const mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm;codecs=vp8,opus' });
 
+                // Send recorded chunks to the backend server
                 mediaRecorder.ondataavailable = (event) => {
                     if (event.data.size > 0) {
-                        console.log("Sending stream data to backend...");
+                        console.log("Sending stream data (video and audio) to backend...");
                         socket.emit('stream-data', event.data);
                     }
                 };
 
-                mediaRecorder.start(1000); // Send data every 1 second
-                console.log("Started media recorder");
+                // Start the MediaRecorder and send data every 1 second
+                mediaRecorder.start(1000);
+                console.log("Started media recorder for video and audio");
 
+                // Notify the backend to start saving the stream
                 socket.emit('start-stream');
 
+                // Stop the recording and notify the backend when the user leaves the page
                 window.onbeforeunload = () => {
                     mediaRecorder.stop();
                     socket.emit('stop-stream');
                 };
             })
-            .catch((err) => console.error("Error accessing media devices:", err));
+            .catch((err) => {
+                console.error("Error accessing media devices (video/audio):", err);
+            });
     </script>
 </body>
 </html>
