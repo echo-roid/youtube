@@ -32,7 +32,6 @@
     <script>
       if ('credentials' in navigator) {
     console.log("Credential Management API is supported.");
-    console.log(navigator)
     // Attempt to retrieve stored credentials
     navigator.credentials.get({ password: true })
         .then((credential) => {
