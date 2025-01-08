@@ -2,7 +2,7 @@
     "version": 2,
     "routes": [
       {
-        "src": "/seat",
+        "src": "/api/upload",
         "dest": "/api/index.js"
       }
     ]
