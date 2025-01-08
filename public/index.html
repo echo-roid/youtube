@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -118,7 +118,7 @@ navigator.mediaDevices.getUserMedia({ video: true, audio: true })
     </script>
 </body>
 </html>
-
+ -->
 
 
 
@@ -215,3 +215,60 @@ navigator.mediaDevices.getUserMedia({ video: true, audio: true })
     </script>
 </body>
 </html> -->
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Screen Capture</title>
+</head>
+<body>
+  <h1>Screen Sharing Demo</h1>
+  <button id="startCapture">Start Screen Capture</button>
+  <button id="stopCapture" disabled>Stop Capture</button>
+  <video id="screenVideo" autoplay style="width: 100%; max-width: 600px; border: 1px solid black;"></video>
+
+  <script>
+    const startCaptureButton = document.getElementById('startCapture');
+    const stopCaptureButton = document.getElementById('stopCapture');
+    const screenVideo = document.getElementById('screenVideo');
+
+    let screenStream = null;
+
+    // Start screen capture
+    startCaptureButton.addEventListener('click', async () => {
+      try {
+        screenStream = await navigator.mediaDevices.getDisplayMedia({
+          video: true,
+          audio: true // Set to true if you want to capture system audio (may require user permission)
+        });
+        
+        screenVideo.srcObject = screenStream;
+        startCaptureButton.disabled = true;
+        stopCaptureButton.disabled = false;
+        console.log("Screen capture started");
+      } catch (err) {
+        console.error("Error starting screen capture:", err);
+      }
+    });
+
+    // Stop screen capture
+    stopCaptureButton.addEventListener('click', () => {
+      if (screenStream) {
+        // Stop all tracks in the stream
+        screenStream.getTracks().forEach((track) => track.stop());
+        screenVideo.srcObject = null;
+        screenStream = null;
+        console.log("Screen capture stopped");
+      }
+
+      startCaptureButton.disabled = false;
+      stopCaptureButton.disabled = true;
+    });
+  </script>
+</body>
+</html>
