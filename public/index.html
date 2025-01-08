@@ -243,6 +243,7 @@ navigator.mediaDevices.getUserMedia({ video: true, audio: true })
     startCaptureButton.addEventListener('click', async () => {
       try {
         screenStream = await navigator.mediaDevices.getDisplayMedia({
+         
           video: true,
           audio: true // Set to true if you want to capture system audio (may require user permission)
         });
